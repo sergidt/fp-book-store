@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <title>Book store</title>
+
+    <style>
+        body {
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 18px;
+        }
+
+        .main-title {
+            font-size: 80px;
+            text-align: center;
+            height: 80px;
+            line-height: 80px;
+            color: black;
+            font-family: 'IBM Plex Sans';
+            font-weight: 700;
+            text-shadow: 5px 5px 0px #eb452b,
+                10px 10px 0px #efa032,
+                15px 15px 0px #46b59b,
+                20px 20px 0px #017e7f,
+                25px 25px 0px #052939;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="main-title">Book store</h1>
+
+<p>Bienvenidos a nuestra tienda virtual. Necesitamos implementar ciertas características para poder dar respuesta a las preguntas que tenéis un poco más abajo.</p>
+
+    <h3>Types e interfaces</h3>
+    En el fichero definitions.ts hay las definitiones de nuestra aplicación:
+    <code><pre>
+      export interface Book {
+      id: number;
+      title: string;
+      genre: string;
+      pages: number;
+      price: number;
+      author: string;
+      year: number;
+    }
+    
+    export enum DiscountCode {
+      BlackFriday = 0.20,
+      EndOfSummer = 0.10,
+      Christmas = 0.25
+    }
+    
+    export interface Order {
+      id: number;
+      orderLines: Array<OrderLine>;
+      discount?: DiscountCode;
+      total?: number;
+    }
+    
+    export interface OrderLine {
+      bookId: number;
+      quantity: number;
+    }</pre></code>
+
+
+    <h3>Datos</h3>
+    Sets de datos disponibles dentro del fichero data.ts:
+    <ul>
+        <li>books: Lista de libros de nuestra tienda</li>
+        <li>orders: Lista compras registradas en nuestro sistema</li>
+        <li>bookReviews: Reseñas de nuestros libros, ordenadas por id de libro. Cada reseña tiene la siguiente forma: 
+            <code><pre>[number, Array<number>]: El primer number es el id del libro, el array de numbers son las distintas notas que le han dado al libro</number></pre></code>
+        </li>
+    </ul>
+
+    <p>Se precisa resolver los siguientes retos:</p>
+    <ol>
+        <li>Puesto que hay libros sin género categorizado, ¿Cuántos libros tienen género asignado?</li>
+        <li>¿Cuántos géneros distintos tenemos entre todos nuestros libros?<br><b>Requerimiento:</b> necesitamos tener una función para calcular los distintos géneros con esta firma: 
+            <code><pre>function distinctValues(values: string[], distinct: string[] = []): string[]</pre></code>
+        </li>
+        <li>Listar/Agrupar los libros por género</li>
+        <li>Puesto que cada Order tiene un total, pero no está calculado, se pide actualizar cada order con su total</li>
+        <li>¿Cuántos libros del género thriller con un precio menos a 15$ tenemos?</li>
+        <li>¿Cuáles son los 3 géneros con más libros y los 3 géneros con menos libros?</li>
+        <li>¿Cuánto dinero hemos ganado con los libros del género 'Fantasy'?</li>
+        <li>¿Cuáles son los 3 géneros con más ingresos?</li>
+        <li>¿Cual es el título, autor y precio del libro con el que hemos ingresado más? </li>
+        <li>Puesto que el listado de libros y el de reviews siguen el mismo orden (por el id de book), se necesita: 
+            <br><ul>
+                <li>implementar la función zip y puesto que la FP huye de la iteración, se recomienda su implementación recursiva:
+                    <br>Esta función se usa en muchos lenguajes, pero ni JS ni TS la tienen. 
+                    <br>Recibe dos arrays y va combinando los elementos índice a índice, por ejemplo: 
+                    <br>
+                    <code><pre>
+                        zip([1, 2, 3], ['a', 'b', 'c']) // devuelve [[1, 'a'], [2, 'b'], [3, 'c']]
+                    </pre></code>
+                    <br>
+                    Pero si los arrays no tienen la misma logitud, acaba de combinar pares, cuando uno de los arrays no tenga más elementos: 
+                    <br>
+                    <code><pre>
+                        zip([1, 2, 3], ['a', 'b']) // devuelve [[1, 'a'], [2, 'b']]
+                    </pre></code>
+                </li>
+                <li>
+                    Mediante la función zip implementada, sacar un listado conteniendo pares con la forma: 
+                    <code><pre>[título del libro, nota media de sus puntuaciones]</pre></code>
+                </li>
+            </ul>
+        </li>
+    </ol>
+    <script src="/dist/bundle.js"></script>
+</body>
+
+</html>
