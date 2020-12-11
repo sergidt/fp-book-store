@@ -154,7 +154,30 @@ const earnedByFantasy = fantasyOrderLines
 log('¿Cuánto dinero hemos ganado con los libros del género Fantasy?', earnedByFantasy.toFixed(2));
 
 console.timeEnd('Tiempo de proceso de la solución NO ÓPTIMA');
-///
+
+
+/// SOLUCIÓN "ÓPTIMA"
+console.time('Tiempo de proceso de la solución ÓPTIMA');
+function orderLinesByGenre(orderLines: Array<OrderLine>, accum: Array<OrderLine> = []) {
+    if (!orderLines.length)
+        return accum;
+    else {
+        const nextOrderLine = orderLines[0];
+        return fantasyBookIds.includes(nextOrderLine.bookId)
+        ? orderLinesByGenre(orderLines.splice(1), [...accum, nextOrderLine])
+        : orderLinesByGenre(orderLines.splice(1).filter(line => line.bookId !== nextOrderLine.bookId), accum);
+    }
+}
+
+
+console.log(orderLinesByGenre(allOrderLines).reduce((acc, cur: OrderLine) => acc + (cur.quantity * getFantasyBookPrice(cur.bookId)), 0));
+
+console.timeEnd('Tiempo de proceso de la solución ÓPTIMA');
+
+// Se demuestra que la solucion "ÓPTIMA" es menos óptima, en tiempo de proceso.
+// Los últimos browsers usan el motor de javascript V8 que es super rápido, por eso la solución a priori menos óptima, rinde tan bien
+// por que usa las funciones propias del lenguaje, que están muy optimizadas
+/////////
 
 // 8
 
