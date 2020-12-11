@@ -14,9 +14,9 @@ const NO_GENRE = '(no genres listed)';
 const hasGenre = (b: Book) => b.genre !== NO_GENRE;
 
 const booksWithGenre: Array<Book> = books.filter(hasGenre);
-
+/*
 log('Libros con género:', booksWithGenre.length);
-
+*/
 // 2
 
 function distinctValues(values: Array<string>, distinct: Array<string> = []): Array<string> {
@@ -33,9 +33,9 @@ const allBooksGenres = booksWithGenre
     .flatMap(_ => _);
 
 const distinctGenres = distinctValues(allBooksGenres);
-
+/*
 log('Cuántos géneros distintos tenemos entre todos nuestros libros?', distinctGenres);
-
+*/
 // 3
 
 // 3.1
@@ -70,11 +70,11 @@ const genresAndCount = booksWithGenre
             return [...entries, [genre, count + 1]];
         },
         []);
-
+/*
 log('Listar/Agrupar los libros por género',
     genresAndCount
 );
-
+*/
 // 4
 
 const calculateOrderAmount = (order: Order) => order.orderLines.reduce((acc: number, line: OrderLine) =>
@@ -123,29 +123,53 @@ log(' los 3 géneros con más libros',
 */
 // 7
 
-const isBooksOfGenre = (genre: string) => (book: Book) => book.genre.toLowerCase().includes(genre.toLowerCase());
+// Solución no óptima, aunque declaramos predicados y funciones que nos serán útiles más adelante
 
-const earnedByGenre = (genre: string) => (books: Array<Book>) =>
-    books.filter(b => isBooksOfGenre(genre)(b)).reduce((acc, cur) => acc + cur.price, 0);
+// Predicado para preguntar si un libro e sde un género concreto
+const isBookOfGenre = (genre: string) => (book: Book) => book.genre.toLowerCase().includes(genre.toLowerCase());
 
-const earnedByFantasy = earnedByGenre('Fantasy');
+// Definimos un nuevo tipo para agrupar id de libro con su precio
+type BookIdAndPrice = [number, number];
 
+// Con el tipo anterior, podemos sacar una lista de todos los ids de libros y su precio que son del género fantasy
+const fantasyBooksIdAndPrice: Array<BookIdAndPrice> = booksWithGenre.filter(isBookOfGenre('Fantasy')).map(book => [book.id, book.price]);
+
+// Aplanamos todos los orderlines
+const allOrderLines = orders.map(o => o.orderLines).flatMap(_ => _);
+
+// Cogemos todos los ids de los libros de fantasy
+const fantasyBookIds = fantasyBooksIdAndPrice.map(([id]) => id);
+
+// Y con estos ids podemos filtrar las líneas que nos interesan, las que incluyen estos libros
+const fantasyOrderLines = allOrderLines.filter(l => fantasyBookIds.includes(l.bookId));
+
+// Hacemos una función de búsqueda de precio a partir de un id, buscando en el array que hemos rellenado con [id, price] de todos los libros de fantasy
+const getFantasyBookPrice = (id: number) => fantasyBooksIdAndPrice.find(([bookId, price]) => id === bookId)[1];
+
+
+// solamente nos queda reducir el set de datos
+const earnedByFantasy = fantasyOrderLines
+.reduce((acc, cur: OrderLine) => acc + (cur.quantity * getFantasyBookPrice(cur.bookId)), 0);
+
+log('¿Cuánto dinero hemos ganado con los libros del género Fantasy?', earnedByFantasy.toFixed(2));
+////
+
+/*
 log('¿Cuánto dinero hemos ganado con los libros del género Fantasy?',
     earnedByFantasy(booksWithGenre)
 );
-
+*/
 // 8
-
+/*
 log('¿Cuáles son los 3 géneros con más ingresos?',
     distinctGenres.map(genre => ([genre, earnedByGenre(genre)(booksWithGenre)]))
                   .sort(sortDesc)
                   .slice(0, 3)
                   .map(_ => _[0])
 );
-
+*/
 // 9
 
-const allOrderLines = orders.map(o => o.orderLines).flatMap(_ => _);
 
 type BookIdAndCounter = [number, number];
 
@@ -164,11 +188,11 @@ const pick = <T>(properties: Array<keyof T>) => (item: T) => properties.reduce((
     ...acc,
     [cur]: item[cur]
 }), {});
-
+/*
 log('¿Cual es el título, autor y precio del libro con el que hemos ingresado más?',
     pick<Book>(['title', 'author', 'price'])(books.find(_ => _.id === soldestBook[0]))
 );
-
+*/
 // 10
 
 function zip<T, K>(array1: Array<T>, array2: Array<K>, accum: Array<[T, K]> = []): Array<[T, K]> {
@@ -176,7 +200,7 @@ function zip<T, K>(array1: Array<T>, array2: Array<K>, accum: Array<[T, K]> = []
         ? accum
         : zip(array1.slice(1), array2.slice(1), [...accum, [array1[0], array2[0]]]);
 }
-
+/*
 log('Mediante la función zip implementada, sacar un listado conteniendo pares con la forma',
     zip(
         books.map(select('title')),
@@ -184,3 +208,4 @@ log('Mediante la función zip implementada, sacar un listado conteniendo pares c
             .reduce((acc, cur) => acc + cur, 0) / reviews.length).toFixed(2))
     )
 );
+*/
