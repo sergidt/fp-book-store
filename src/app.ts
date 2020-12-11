@@ -122,7 +122,7 @@ log(' los 3 géneros con más libros',
 );
 */
 // 7
-
+console.time('Tiempo de proceso de la solución NO ÓPTIMA');
 // Solución no óptima, aunque declaramos predicados y funciones que nos serán útiles más adelante
 
 // Predicado para preguntar si un libro e sde un género concreto
@@ -152,22 +152,22 @@ const earnedByFantasy = fantasyOrderLines
 .reduce((acc, cur: OrderLine) => acc + (cur.quantity * getFantasyBookPrice(cur.bookId)), 0);
 
 log('¿Cuánto dinero hemos ganado con los libros del género Fantasy?', earnedByFantasy.toFixed(2));
-////
 
-/*
-log('¿Cuánto dinero hemos ganado con los libros del género Fantasy?',
-    earnedByFantasy(booksWithGenre)
-);
-*/
+console.timeEnd('Tiempo de proceso de la solución NO ÓPTIMA');
+///
+
 // 8
-/*
+
+const earnedByGenre = (genre: string) => (books: Array<Book>) =>
+    books.filter(b => isBookOfGenre(genre)(b)).reduce((acc, cur) => acc + cur.price, 0);
+
 log('¿Cuáles son los 3 géneros con más ingresos?',
     distinctGenres.map(genre => ([genre, earnedByGenre(genre)(booksWithGenre)]))
                   .sort(sortDesc)
                   .slice(0, 3)
                   .map(_ => _[0])
 );
-*/
+
 // 9
 
 
